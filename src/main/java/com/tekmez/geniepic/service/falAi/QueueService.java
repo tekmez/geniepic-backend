@@ -14,7 +14,6 @@ import java.util.concurrent.TimeUnit;
 public class QueueService<T extends IAIService> {
     private final T aiService;
 
-    @Autowired
     public QueueService(T aiService) {
         this.aiService = aiService;
     }
