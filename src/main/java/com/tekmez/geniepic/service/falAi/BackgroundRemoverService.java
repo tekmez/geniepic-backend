@@ -1,0 +1,45 @@
+package com.tekmez.geniepic.service.falAi;
+
+import com.tekmez.geniepic.exception.SubmissionException;
+import com.tekmez.geniepic.model.dto.ImageReqDto;
+import com.tekmez.geniepic.model.dto.ImageResponseDto;
+import lombok.extern.log4j.Log4j2;
+import org.springframework.stereotype.Service;
+import com.google.gson.JsonObject;
+import java.util.Map;
+import ai.fal.client.queue.*;
+import com.tekmez.geniepic.interfaces.IBackgroundRemoverService;
+
+@Service
+@Log4j2
+public class BackgroundRemoverService extends BaseFalAIService implements IBackgroundRemoverService {
+    public BackgroundRemoverService() {
+        super("Eraser", "fal-ai/bria/eraser");
+    }
+
+    @Override
+    public String submitRequest(ImageReqDto payload) {
+        try {
+            var input = Map.of(
+                    "image_url", payload.getImageBase64(),
+                    "mask_url", payload.getMask_url()
+            );
+
+            var result = fal.queue().submit(baseUrl,
+                    QueueSubmitOptions.<JsonObject>builder()
+                            .input(input)
+                            .build()
+            );
+
+            return result.getRequestId();
+        } catch (Exception e) {
+            log.error("Failed to submit {} request: {}", serviceName, e.getMessage());
+            throw new SubmissionException(serviceName, e);
+        }
+    }
+
+    @Override
+    public ImageResponseDto fetchResult(String requestId) {
+        return getFalImageResponse(requestId);
+    }
+}
