@@ -5,6 +5,7 @@ import com.tekmez.geniepic.model.dto.ImageReqDto;
 import com.tekmez.geniepic.model.dto.ImageResponseDto;
 import com.tekmez.geniepic.service.falAi.QueueService;
 import jakarta.validation.Valid;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 public class RetoucherController {
     private final QueueService<IRetourcherService> queueService;
 
+    @Autowired
     public RetoucherController(QueueService<IRetourcherService> queueService) {
         this.queueService = queueService;
     }
